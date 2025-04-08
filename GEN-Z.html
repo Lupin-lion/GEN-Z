@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"="width=device-width, initial-scale=1.0">
+  <title>GEN-Z Media</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    body.dark-mode {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    header {
+      background: linear-gradient(90deg, #333, #555);
+      color: #fff;
+      padding: 15px 0;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      color: #ff6347;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      cursor: pointer;
+    }
+
+    .nav-links a:hover {
+      color: #ff6347;
+    }
+
+    .dark-mode-toggle {
+      background: #ff6347;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s ease;
+    }
+
+    .dark-mode-toggle:hover {
+      background: #e5533d;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    .search-bar {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .search-bar input {
+      width: 80%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .search-bar input:focus {
+      outline: none;
+      border-color: #ff6347;
+      box-shadow: 0 0 5px rgba(255, 99, 71, 0.5);
+    }
+
+    section {
+      display: none;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    .post {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .post:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .reaction {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .reaction button {
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s ease;
+    }
+
+    .reaction button:hover {
+      background: #ff6347;
+    }
+
+    .comment-section {
+      display: none;
+      margin-top: 15px;
+      border-top: 1px solid #ddd;
+      padding-top: 10px;
+    }
+
+    .comment-section.visible {
+      display: block;
+    }
+
+    .comment {
+      margin-bottom: 10px;
+      padding: 10px;
+      background: #f9f9f9;
+      border-radius: 5px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    footer {
+      background: #333;
+      color: #fff;
+      text-align: center;
+      padding: 15px 0;
+      margin-top: 40px;
+      box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    footer a {
+      color: #ff6347;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .reaction {
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .post {
+        padding: 15px;
+      }
+
+      .search-bar input {
+        width: 100%;
+      }
+    }
+
+    .fab {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #ff6347;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .fab:hover {
+      background: #e5533d;
+      transform: scale(1.1);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 1001;
+    }
+
+    .modal.active {
+      display: block;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    .modal-overlay.active {
+      display: block;
+    }
+
+    .modal input,
+    .modal textarea {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .modal button {
+      background: #ff6347;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .modal button:hover {
+      background: #e5533d;
+    }
+
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #333;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      display: none;
+      z-index: 1002;
+    }
+
+    .notification.show {
+      display: block;
+      animation: fadeInOut 3s ease;
+    }
+
+    @keyframes fadeInOut {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      10%,
+      90% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+    }
+
+    .social-icons {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .social-icons a {
+      color: #fff;
+      font-size: 20px;
+      transition: color 0.3s ease;
+    }
+
+    .social-icons a:hover {
+      color: #ff6347;
+    }
+
+    /* Nested Replies */
+    .reply-section {
+      margin-left: 20px;
+      margin-top: 10px;
+      border-left: 2px solid #ddd;
+      padding-left: 10px;
+    }
+
+    .comment-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 5px;
+    }
+
+    .comment-actions button {
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.3s ease;
+    }
+
+    .comment-actions button:hover {
+      background: #ff6347;
+    }
+
+    .like-count {
+      font-size: 12px;
+      color: #555;
+      margin-left: 5px;
+    }
+
+    #loading-spinner {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1003;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #ff6347;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">GEN-Z</div>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#profile">Profile</a></li>
+        <li><a href="#settings">Settings</a></li>
+        <li><a href="#messages">Messages</a></li>
+      </ul>
+      <button id="dark-mode-toggle" class="dark-mode-toggle">Theme</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="Search posts...">
+    </div>
+
+    <!-- Home Section -->
+    <section id="home" class="post-feed active">
+      <h1>Welcome to GEN-Z!</h1>
+      <div class="post">
+        <h2>Post 1</h2>
+        <p>This is the first post!</p>
+        <div class="reaction">
+          <button>👍 Like</button>
+          <button class="comment-btn">💬 Comments</button>
+          <button class="repost-btn">🔁 Repost</button>
+        </div>
+        <div class="comment-section">
+          <input type="text" class="comment-input" placeholder="Write a comment...">
+          <button class="add-comment-btn">Add Comment</button>
+          <div class="comment-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Profile Section -->
+    <section id="profile">
+      <h1>Your Profile</h1>
+      <p>Edit your details or view recent activity:</p>
+      <p><strong>Activity:</strong> You recently liked a post.</p>
+    </section>
+
+    <!-- Settings Section -->
+    <section id="settings">
+      <h1>Settings</h1>
+      <p>Customize your profile and notifications.</p>
+    </section>
+
+    <!-- Messages Section -->
+    <section id="messages">
+      <h1>Messages</h1>
+      <p>Check your inbox and send a message to your friends.</p>
+    </section>
+  </main>
+
+  <button class="fab" onclick="openModal()">+</button>
+
+  <div class="notification" id="notification"></div>
+
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
+  <div class="modal" id="modal">
+    <h2>Create New Post</h2>
+    <input type="text" id="post-title" placeholder="Post Title">
+    <textarea id="post-content" placeholder="Post Content"></textarea>
+    <button onclick="createPost()">Create</button>
+  </div>
+
+  <div id="loading-spinner" style="display: none;">
+    <div class="spinner"></div>
+  </div>
+
+  <footer>
+    <p>GEN-Z © 2025 | Connect and Share | <a href="#">Privacy Policy</a></p>
+    <div class="social-icons">
+      <a href="https://facebook.com" target="_blank">🌐</a>
+      <a href="https://twitter.com" target="_blank">🐦</a>
+      <a href="https://instagram.com" target="_blank">📸</a>
+    </div>
+  </footer>
+
+  <script>
+    function showSpinner() {
+      document.getElementById("loading-spinner").style.display = "block";
+    }
+
+    function hideSpinner() {
+      document.getElementById("loading-spinner").style.display = "none";
+    }
+
+    // Define fetchPosts globally
+    async function fetchPosts() {
+      const postFeed = document.querySelector(".post-feed");
+      showSpinner();
+      try {
+        const response = await fetch("http://localhost:3000/api/posts");
+        const posts = await response.json();
+        postFeed.innerHTML = ""; // Clear existing posts
+        posts.forEach((post) => {
+          const postElement = document.createElement("div");
+          postElement.classList.add("post");
+          postElement.innerHTML = `
+            <h2>${post.title}</h2>
+            <p>${post.content}</p>
+            <div class="reaction">
+              <button class="like-btn" data-id="${post._id}">👍 Like</button>
+              <span class="like-count">${post.likes}</span>
+              <button class="comment-btn" data-id="${post._id}">💬 Comments</button>
+              <button class="repost-btn" data-id="${post._id}">🔁 Repost</button>
+            </div>
+            <div class="comment-section">
+              <input type="text" class="comment-input" placeholder="Write a comment...">
+              <button class="add-comment-btn" data-id="${post._id}">Add Comment</button>
+              <div class="comment-list">
+                ${post.comments
+                  .map(
+                    (comment) => `
+                  <div class="comment">
+                    <p>${comment.text}</p>
+                  </div>
+                `
+                  )
+                  .join("")}
+              </div>
+            </div>
+          `;
+          postFeed.appendChild(postElement);
+        });
+      } catch (err) {
+        console.error("Error fetching posts:", err);
+      } finally {
+        hideSpinner();
+      }
+    }
+
+    // Move createPost and other functions here
+    async function createPost() {
+      const title = document.getElementById("post-title").value.trim();
+      const content = document.getElementById("post-content").value.trim();
+
+      if (!title || !content) {
+        alert("Please fill in both the title and content.");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:3000/api/posts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title, content }),
+        });
+
+        if (response.ok) {
+          closeModal(); // Close the modal after creating the post
+          fetchPosts(); // Refresh the posts
+        } else {
+          alert("Failed to create post. Please try again.");
+        }
+      } catch (err) {
+        console.error("Error creating post:", err);
+        alert("An error occurred. Please try again.");
+      }
+    }
+
+    // Keep the DOMContentLoaded block for event listeners
+    document.addEventListener("DOMContentLoaded", () => {
+      fetchPosts(); // Fetch posts when the page loads
+
+      const postFeed = document.querySelector(".post-feed");
+
+      // Add event listeners for like, comment, and repost buttons
+      postFeed.addEventListener("click", (event) => {
+        const target = event.target;
+        const postId = target.dataset.id;
+
+        if (target.classList.contains("like-btn")) {
+          likePost(postId);
+        } else if (target.classList.contains("add-comment-btn")) {
+          const commentInput = target.previousElementSibling;
+          const commentText = commentInput.value.trim();
+          if (commentText) {
+            addComment(postId, commentText);
+            commentInput.value = ""; // Clear input
+          }
+        } else if (target.classList.contains("comment-btn")) {
+          toggleCommentSection(target);
+        } else if (target.classList.contains("repost-btn")) {
+          repostPost(postId);
+        }
+      });
+
+      // Like a post
+      async function likePost(postId) {
+        try {
+          const response = await fetch(
+            `http://localhost:3000/api/posts/${postId}/like`,
+            { method: "POST" }
+          );
+          if (response.ok) {
+            fetchPosts(); // Refresh posts
+          }
+        } catch (err) {
+          console.error("Error liking post:", err);
+        }
+      }
+
+      // Add a comment to a post
+      async function addComment(postId, text) {
+        try {
+          const response = await fetch(
+            `http://localhost:3000/api/posts/${postId}/comments`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ text }),
+            }
+          );
+          if (response.ok) {
+            fetchPosts(); // Refresh posts
+          }
+        } catch (err) {
+          console.error("Error adding comment:", err);
+        }
+      }
+
+      // Toggle the visibility of the comment section
+      function toggleCommentSection(button) {
+        const commentSection = button.closest(".post").querySelector(".comment-section");
+        commentSection.classList.toggle("visible");
+      }
+
+      // Repost a post
+      async function repostPost(postId) {
+        try {
+          const response = await fetch(`http://localhost:3000/api/posts/${postId}/repost`, {
+            method: "POST",
+          });
+          if (response.ok) {
+            alert("Post reposted successfully!");
+            fetchPosts(); // Refresh posts
+          } else {
+            alert("Failed to repost. Please try again.");
+          }
+        } catch (err) {
+          console.error("Error reposting post:", err);
+        }
+      }
+
+      // Default section
+      const defaultSection = document.querySelector(".post-feed");
+      defaultSection.classList.add("active");
+
+      // Navigation functionality
+      document.querySelectorAll(".nav-links a").forEach(link => {
+        link.addEventListener("click", event => {
+          event.preventDefault();
+
+          // Hide all sections
+          document.querySelectorAll("section").forEach(section => {
+            section.classList.remove("active");
+          });
+
+          // Show the corresponding section
+          const sectionId = event.target.getAttribute("href").substring(1); // Remove the "#"
+          const activeSection = document.getElementById(sectionId);
+          activeSection.classList.add("active");
+        });
+      });
+
+      // Floating Action Button (FAB) functionality
+      document.querySelector(".fab").addEventListener("click", () => {
+        showNotification("Floating Action Button Clicked!");
+      });
+
+      function showNotification(message) {
+        const notification = document.getElementById("notification");
+        notification.textContent = message;
+        notification.classList.add("show");
+        setTimeout(() => {
+          notification.classList.remove("show");
+        }, 3000);
+      }
+    });
+
+    function openModal() {
+      const modal = document.getElementById("modal");
+      const modalOverlay = document.getElementById("modal-overlay");
+      modal.classList.add("active");
+      modalOverlay.classList.add("active");
+    }
+
+    function closeModal() {
+      const modal = document.getElementById("modal");
+      const modalOverlay = document.getElementById("modal-overlay");
+      modal.classList.remove("active");
+      modalOverlay.classList.remove("active");
+    }
+
+    document.getElementById("search-input").addEventListener("input", (event) => {
+      const query = event.target.value.toLowerCase();
+      document.querySelectorAll(".post").forEach((post) => {
+        const title = post.querySelector("h2").textContent.toLowerCase();
+        post.style.display = title.includes(query) ? "block" : "none";
+      });
+    });
+
+    window.addEventListener("scroll", () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        fetchMorePosts(); // Function to fetch more posts
+      }
+    });
+
+    document.getElementById("dark-mode-toggle").addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+    });
+  </script>
+</body>
+</html>
