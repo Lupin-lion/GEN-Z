@@ -462,6 +462,8 @@
       <h1>Your Profile</h1>
       <p>Edit your details or view recent activity:</p>
       <p><strong>Activity:</strong> You recently liked a post.</p>
+      <button onclick="sendFriendRequest('friendUserId')">Send Friend Request</button>
+      <button onclick="fetchFriends('currentUserId')">View Friends</button>
     </section>
 
     <!-- Settings Section -->
@@ -475,6 +477,23 @@
       <h1>Messages</h1>
       <p>Check your inbox and send a message to your friends.</p>
     </section>
+
+    <!-- Signup Form -->
+    <form id="signup-form">
+      <h2>Sign Up</h2>
+      <input type="text" id="signup-username" placeholder="Username" required />
+      <input type="email" id="signup-email" placeholder="Email" required />
+      <input type="password" id="signup-password" placeholder="Password" required />
+      <button type="button" onclick="signup()">Sign Up</button>
+    </form>
+
+    <!-- Login Form -->
+    <form id="login-form">
+      <h2>Log In</h2>
+      <input type="email" id="login-email" placeholder="Email" required />
+      <input type="password" id="login-password" placeholder="Password" required />
+      <button type="button" onclick="login()">Log In</button>
+    </form>
   </main>
 
   <button class="fab" onclick="openModal()">+</button>
@@ -628,6 +647,122 @@
         }
       } catch (err) {
         console.error("Error reposting post:", err);
+      }
+    }
+
+    async function signup() {
+      const username = document.getElementById("signup-username").value.trim();
+      const email = document.getElementById("signup-email").value.trim();
+      const password = document.getElementById("signup-password").value.trim();
+
+      if (!username || !email || !password) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      try {
+        const response = await fetch("https://vast-bayou-80396-565a5a041ae1.herokuapp.com/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, email, password }),
+        });
+
+        if (response.ok) {
+          alert("Signup successful! Please log in.");
+        } else {
+          const errorData = await response.json();
+          alert(`Failed to sign up: ${errorData.error || "Unknown error"}`);
+        }
+      } catch (err) {
+        console.error("Error signing up:", err);
+        alert("An error occurred. Please try again.");
+      }
+    }
+
+    async function login() {
+      const email = document.getElementById("login-email").value.trim();
+      const password = document.getElementById("login-password").value.trim();
+
+      if (!email || !password) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      try {
+        const response = await fetch("https://vast-bayou-80396-565a5a041ae1.herokuapp.com/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          localStorage.setItem("token", data.token); // Store the JWT token
+          alert("Login successful!");
+        } else {
+          const errorData = await response.json();
+          alert(`Failed to log in: ${errorData.error || "Unknown error"}`);
+        }
+      } catch (err) {
+        console.error("Error logging in:", err);
+        alert("An error occurred. Please try again.");
+      }
+    }
+
+    async function sendFriendRequest(friendId) {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Please log in to send friend requests.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://vast-bayou-80396-565a5a041ae1.herokuapp.com/api/users/${friendId}/friend-request`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+        });
+
+        if (response.ok) {
+          alert("Friend request sent successfully!");
+        } else {
+          const errorData = await response.json();
+          alert(`Failed to send friend request: ${errorData.error || "Unknown error"}`);
+        }
+      } catch (err) {
+        console.error("Error sending friend request:", err);
+        alert("An error occurred. Please try again.");
+      }
+    }
+
+    async function fetchFriends(userId) {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Please log in to view your friends.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://vast-bayou-80396-565a5a041ae1.herokuapp.com/api/users/${userId}/friends`, {
+          method: "GET",
+          headers: {
+            Authorization: token,
+          },
+        });
+
+        if (response.ok) {
+          const friends = await response.json();
+          console.log("Friends List:", friends);
+          // Display friends in the UI
+        } else {
+          const errorData = await response.json();
+          alert(`Failed to fetch friends list: ${errorData.error || "Unknown error"}`);
+        }
+      } catch (err) {
+        console.error("Error fetching friends list:", err);
+        alert("An error occurred. Please try again.");
       }
     }
 
