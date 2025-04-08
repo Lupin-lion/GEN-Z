@@ -511,12 +511,11 @@
       document.getElementById("loading-spinner").style.display = "none";
     }
 
-    // Define fetchPosts globally
     async function fetchPosts() {
       const postFeed = document.querySelector(".post-feed");
       showSpinner();
       try {
-        const response = await fetch("http://localhost:3000/api/posts");
+        const response = await fetch("https://vast-bayou-80396-565a5a041ae1.herokuapp.com/api/posts");
         const posts = await response.json();
         postFeed.innerHTML = ""; // Clear existing posts
         posts.forEach((post) => {
@@ -556,7 +555,6 @@
       }
     }
 
-    // Move createPost and other functions here
     async function createPost() {
       const title = document.getElementById("post-title").value.trim();
       const content = document.getElementById("post-content").value.trim();
@@ -567,7 +565,7 @@
       }
 
       try {
-        const response = await fetch("http://localhost:3000/api/posts", {
+        const response = await fetch("https://vast-bayou-80396-565a5a041ae1.herokuapp.com/api/posts", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ title, content }),
@@ -585,7 +583,54 @@
       }
     }
 
-    // Keep the DOMContentLoaded block for event listeners
+    async function likePost(postId) {
+      try {
+        const response = await fetch(
+          `https://vast-bayou-80396-565a5a041ae1.herokuapp.com/api/posts/${postId}/like`,
+          { method: "POST" }
+        );
+        if (response.ok) {
+          fetchPosts(); // Refresh posts
+        }
+      } catch (err) {
+        console.error("Error liking post:", err);
+      }
+    }
+
+    async function addComment(postId, text) {
+      try {
+        const response = await fetch(
+          `https://vast-bayou-80396-565a5a041ae1.herokuapp.com/api/posts/${postId}/comments`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text }),
+          }
+        );
+        if (response.ok) {
+          fetchPosts(); // Refresh posts
+        }
+      } catch (err) {
+        console.error("Error adding comment:", err);
+      }
+    }
+
+    async function repostPost(postId) {
+      try {
+        const response = await fetch(`https://vast-bayou-80396-565a5a041ae1.herokuapp.com/api/posts/${postId}/repost`, {
+          method: "POST",
+        });
+        if (response.ok) {
+          alert("Post reposted successfully!");
+          fetchPosts(); // Refresh posts
+        } else {
+          alert("Failed to repost. Please try again.");
+        }
+      } catch (err) {
+        console.error("Error reposting post:", err);
+      }
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
       fetchPosts(); // Fetch posts when the page loads
 
@@ -616,7 +661,7 @@
       async function likePost(postId) {
         try {
           const response = await fetch(
-            `http://localhost:3000/api/posts/${postId}/like`,
+            `https://vast-bayou-80396-565a5a041ae1.herokuapp.com/api/posts/${postId}/like`,
             { method: "POST" }
           );
           if (response.ok) {
@@ -631,7 +676,7 @@
       async function addComment(postId, text) {
         try {
           const response = await fetch(
-            `http://localhost:3000/api/posts/${postId}/comments`,
+            `https://vast-bayou-80396-565a5a041ae1.herokuapp.com/api/posts/${postId}/comments`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -655,7 +700,7 @@
       // Repost a post
       async function repostPost(postId) {
         try {
-          const response = await fetch(`http://localhost:3000/api/posts/${postId}/repost`, {
+          const response = await fetch(`https://vast-bayou-80396-565a5a041ae1.herokuapp.com/api/posts/${postId}/repost`, {
             method: "POST",
           });
           if (response.ok) {
